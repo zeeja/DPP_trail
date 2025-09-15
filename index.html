@@ -58,7 +58,6 @@
       .grid{grid-template-columns:1fr}
       .phone{height:auto}
     }
-  .bars{display:grid;gap:10px;margin-top:10px}.bar{background:#0d1228;border:1px solid #2a356a;border-radius:10px;overflow:hidden;height:12px}.bar .fill{height:100%;background:linear-gradient(90deg,#00d18f,#6f7dff);}
   </style>
 </head>
 <body>
@@ -72,7 +71,10 @@
           <a class="btn outline" href="#materials">View materials</a>
           <span id="serialBadge" class="badge">Serial: —</span>
         </div>
-        
+        <form class="search" id="jumpForm">
+          <input id="panelID" placeholder="Enter serial e.g. BS-2025-0001" autocomplete="off" />
+          <button type="submit">Open</button>
+        </form>
       </div>
       <div class="phone">
         <div class="pill">Biosphere • DPP</div>
@@ -87,7 +89,12 @@
           <canvas id="compositionChart" height="170"></canvas>
           <div class="muted" style="margin-top:6px">Material composition</div>
         </div>
-                      <div class="muted" id="uid">—</div>
+        <div class="card" style="margin-top:12px">
+          <div class="qr">
+            <img id="qr" alt="QR"/>
+            <div>
+              <div style="font-weight:700">Share this passport</div>
+              <div class="muted" id="uid">—</div>
             </div>
           </div>
         </div>
@@ -142,43 +149,14 @@
       return m ? parseFloat(m[0]) : null;
     }
 
-    function renderCircularity(data){
-      const side = document.querySelector('aside.card');
-      if(!side) return;
-      const wrap = document.createElement('div');
-      wrap.innerHTML = `<h3>Circularity</h3><div class="bars" id="circBars"></div>`;
-      side.appendChild(wrap);
-      const bars = wrap.querySelector('#circBars');
-      // Recyclability overall
-      const recyc = pctToNumber(data.recyclability);
-      if(recyc!=null){
-        const row = document.createElement('div');
-        row.innerHTML = `<div class="muted" style="margin:4px 0 6px">Recyclability</div><div class="bar"><div class="fill" style="width:${recyc}%;"></div></div>`;
-        bars.appendChild(row);
-      }
-      // Recycled content per-material
-      const rc = data.recycled_content || {};
-      for(const [k,v] of Object.entries(rc)){
-        const p = pctToNumber(v);
-        if(p==null) continue;
-        const row = document.createElement('div');
-        row.innerHTML = `<div class="muted" style="margin:8px 0 6px">${k} (recycled)</div><div class="bar"><div class="fill" style="width:${p}%;"></div></div>`;
-        bars.appendChild(row);
-      }
-    }
-
     function buildCompositionChart(ctx, comp){
       if(!comp || !Object.keys(comp).length) return null;
       const labels = Object.keys(comp);
       const values = Object.values(comp).map(v=>pctToNumber(v));
       if(values.some(v=>v==null)) return null;
-      const colors = ['#00d18f','#6f7dff','#f6c760','#f472b6','#60a5fa','#34d399'];
       return new Chart(ctx, {
         type:'doughnut',
-        data:{ labels, datasets:[{ data: values, backgroundColor: colors.slice(0, values.length), borderWidth: 2, hoverOffset: 8 }] },
-        options:{ plugins:{ legend:{ position:'bottom', labels:{ color:'#cdd6f4' } }, tooltip:{ callbacks:{ label:(tt)=> `${tt.label}: ${tt.formattedValue}%` } } }, cutout:'64%' }
-      });
-    }] },
+        data:{ labels, datasets:[{ data: values }] },
         options:{ plugins:{ legend:{ labels:{ color:'#cdd6f4' } } },
           cutout:'60%',
           borderColor:'#0b0e1a',
@@ -256,12 +234,12 @@
       setText('#pi_origin', data.origin || '—');
       setText('#pi_compliance', Array.isArray(data.compliance)? data.compliance.join(', ') : (data.compliance||'—'));
       setText('#pi_haz', Array.isArray(data.hazardous_substances)? data.hazardous_substances.join(', ') : (data.hazardous_substances||'—'));
+
+      // Recycled content & recyclability
       const rc = data.recycled_content || {};
       const rcText = Object.keys(rc).length ? Object.entries(rc).map(([k,v])=>`${k}: ${v}`).join(', ') : '—';
       setText('#pi_recycled', rcText);
       setText('#pi_recyclability', data.recyclability || '—');
-      // Circularity bars
-      renderCircularity(data);
 
       // Composition chart
       const comp = data.material_composition_pct || null; // e.g., {Glass: 65, Cells: 20, Frame: 12, JunctionBox: 3}
@@ -272,7 +250,9 @@
         ctx.parentElement.style.display = 'none';
       }
 
-      
+      // Serial jump form
+      document.getElementById('jumpForm').addEventListener('submit', (e)=>{
+        e.preventDefault();
         const id = (document.getElementById('panelID').value||'').trim().toUpperCase();
         if(!id) return;
         const base = location.origin + location.pathname;
