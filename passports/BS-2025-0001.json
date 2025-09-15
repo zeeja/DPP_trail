@@ -38,3 +38,9 @@
     "2025-09-01: Junction box replaced by Installer Co."
   ]
 }
+"material_composition_pct": {
+  "Glass": 65,
+  "Cells": 20,
+  "Frame": 12,
+  "Junction Box": 3
+}
