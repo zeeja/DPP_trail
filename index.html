@@ -186,7 +186,6 @@
 
       // QR & UID
       const dppUrl = location.origin + location.pathname + `?serial=${encodeURIComponent(serial)}`;
-      $('#qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(dppUrl)}`;
       setText('#uid', data.uid || `urn:bs:pv:${serial}`);
 
       // Buttons
