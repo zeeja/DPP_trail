@@ -10,12 +10,17 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     :root{
-      --brand:#00d18f; /* mint green */
-      --brand-2:#6f7dff; /* indigo */
+      --brand:#00d18f; --brand-2:#6f7dff;
       --bg1:#0b0e1a; --bg2:#14213d; --card:#0f1326; --line:#20274a; --muted:#9aa3b2; --text:#e5e9f0;
     }
     *{box-sizing:border-box}
-    body{margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--text); background: radial-gradient(1200px 600px at 20% -10%, #1b2757 0%, transparent 60%), radial-gradient(1000px 500px at 110% 10%, #1a3b2e 0%, transparent 60%), linear-gradient(180deg, var(--bg1), var(--bg2));}
+    body{
+      margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% -10%, #1b2757 0%, transparent 60%),
+        radial-gradient(1000px 500px at 110% 10%, #1a3b2e 0%, transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+    }
     a{color:#9cc7ff}
     .wrap{max-width:1200px; margin:0 auto; padding:28px 20px 56px}
     .hero{display:grid; grid-template-columns: 1.1fr .9fr; gap:36px; align-items:center}
@@ -25,8 +30,9 @@
     .btn{background:var(--brand); color:#05110e; padding:12px 16px; border-radius:12px; font-weight:700; text-decoration:none; box-shadow:0 8px 24px rgba(0,209,143,.25)}
     .btn.outline{background:transparent; color:#bcd7ff; border:1px solid #33406b}
 
-    .phone{position:relative; border-radius:32px; background:linear-gradient(180deg,#0f1224,#0a0d1b); border:1px solid #1f2546; box-shadow:0 12px 30px rgba(0,0,0,.35); padding:18px; height:560px}
+    .phone{position:relative; border-radius:32px; background:linear-gradient(180deg,#0f1224,#0a0d1b); border:1px solid #1f2546; box-shadow:0 12px 30px rgba(0,0,0,.35); padding:18px; min-height:560px}
     .pill{display:inline-block; font-size:12px; color:#a8b2c8; border:1px solid #24305d; border-radius:999px; padding:4px 10px;}
+    .pill.active{background:#1a2346; border-color:#3a4aa0; color:#dfe7ff}
     .phone .title{font-weight:800; font-size:22px;}
     .phone .card{background:#0c1020; border:1px solid #1b2250; border-radius:16px; padding:12px; margin-top:10px}
 
@@ -43,22 +49,24 @@
     .stat{padding:14px; background:#0c1022; border:1px solid #1b2250; border-radius:14px}
     .stat .k{font-size:22px; font-weight:800}
     .muted{color:var(--muted)}
-
-    .qr{display:flex; gap:14px; align-items:center}
-    .qr img{width:112px; height:112px; border-radius:12px; border:1px solid #263057}
-
-    .search{margin:14px 0 0; display:flex; gap:10px}
-    .search input{flex:1; background:#0d1228; color:#eaf2ff; border:1px solid #2a356a; border-radius:12px; padding:12px 14px}
-    .search button{background:var(--brand-2); color:#05060d; border:0; padding:12px 16px; border-radius:12px; font-weight:700}
-
     .badge{background:#0e1531; border:1px solid #283264; padding:6px 9px; border-radius:999px; color:#a7b6e2; font-size:12px}
 
+    /* Circularity bars */
+    .bars{display:grid;gap:10px;margin-top:10px}
+    .bar{background:#0d1228;border:1px solid #2a356a;border-radius:10px;overflow:hidden;height:12px}
+    .bar .fill{height:100%;background:linear-gradient(90deg,#00d18f,#6f7dff);}
+
+    /* Explorer */
+    .accordion h4{margin:14px 0 6px; color:#dce3f1}
+    .accordion details{border:1px solid #263057; border-radius:10px; background:#0d1228; padding:8px 10px; margin-bottom:8px}
+    .accordion summary{cursor:pointer; list-style:none}
+    .tabs{display:flex; gap:8px; overflow:auto; padding-bottom:6px}
+    .select{background:#0d1228;color:#eaf2ff;border:1px solid #2a356a;border-radius:10px;padding:8px 12px}
     @media (max-width: 960px){
       .hero{grid-template-columns:1fr}
       .grid{grid-template-columns:1fr}
-      .phone{height:auto}
+      .phone{min-height:auto}
     }
-  .bars{display:grid;gap:10px;margin-top:10px}.bar{background:#0d1228;border:1px solid #2a356a;border-radius:10px;overflow:hidden;height:12px}.bar .fill{height:100%;background:linear-gradient(90deg,#00d18f,#6f7dff);}
   </style>
 </head>
 <body>
@@ -66,31 +74,31 @@
     <section class="hero">
       <div>
         <h1>Digital product passports for ESPR compliance</h1>
-        <p>The EU Ecodesign for Sustainable Products Regulation (ESPR) requires transparent, durable, repairable products. Biosphere’s DPP shares verified specs, circularity metrics, and end‑of‑life guidance per panel.</p>
+        <p>The EU Ecodesign for Sustainable Products Regulation (ESPR) requires transparent, durable, repairable products. Biosphere’s DPP shares verified specs, circularity metrics, and end-of-life guidance per panel.</p>
         <div class="cta">
           <a id="openDatasheet" class="btn" href="#" target="_blank" rel="noopener">Open datasheet</a>
           <a class="btn outline" href="#materials">View materials</a>
           <span id="serialBadge" class="badge">Serial: —</span>
         </div>
-        
       </div>
+
       <div class="phone">
         <div class="pill">Biosphere • DPP</div>
         <div class="title" style="margin:8px 0 6px" id="modelTitle">—</div>
         <div class="muted" id="countryYear">—</div>
+
         <div class="row" style="margin-top:14px">
           <div class="stat"><div class="k" id="powerW">—</div><div class="muted">Power (W)</div></div>
           <div class="stat"><div class="k" id="effPct">—</div><div class="muted">Efficiency</div></div>
           <div class="stat"><div class="k" id="co2e">—</div><div class="muted">CO₂e / panel</div></div>
         </div>
+
         <div class="card" style="margin-top:14px">
           <canvas id="compositionChart" height="170"></canvas>
           <div class="muted" style="margin-top:6px">Material composition</div>
         </div>
-                      <div class="muted" id="uid">—</div>
-            </div>
-          </div>
-        </div>
+
+        <div class="muted" style="margin-top:10px" id="uid">—</div>
       </div>
     </section>
 
@@ -98,13 +106,20 @@
       <div class="card">
         <h3>General</h3>
         <table id="generalTable"></table>
+
         <h3 id="materials">Composition & Materials</h3>
         <table id="materialsTable"></table>
+
         <h3>Instructions & Documents</h3>
         <table id="docsTable"></table>
+
         <h3>Updates & Maintenance Log</h3>
         <ul id="updatesList" class="muted" style="padding-left:18px"></ul>
       </div>
+
+      <!-- NEW: Component Explorer card (left column, below the first card) -->
+      <div class="card" id="specExplorer"></div>
+
       <aside class="card">
         <h3>Passport Info</h3>
         <table>
@@ -116,6 +131,7 @@
           <tr><th>Recycled Content</th><td id="pi_recycled">—</td></tr>
           <tr><th>Recyclability</th><td id="pi_recyclability">—</td></tr>
         </table>
+        <!-- Circularity bars will be appended here -->
       </aside>
     </section>
   </div>
@@ -134,7 +150,6 @@
       if(/^https?:\/\//.test(String(v))) return `<a href="${v}" target="_blank" rel="noopener">Open</a>`;
       return String(v);
     }
-
     function pctToNumber(x){
       if(x==null) return null;
       if(typeof x==='number') return x;
@@ -149,14 +164,12 @@
       wrap.innerHTML = `<h3>Circularity</h3><div class="bars" id="circBars"></div>`;
       side.appendChild(wrap);
       const bars = wrap.querySelector('#circBars');
-      // Recyclability overall
       const recyc = pctToNumber(data.recyclability);
       if(recyc!=null){
         const row = document.createElement('div');
         row.innerHTML = `<div class="muted" style="margin:4px 0 6px">Recyclability</div><div class="bar"><div class="fill" style="width:${recyc}%;"></div></div>`;
         bars.appendChild(row);
       }
-      // Recycled content per-material
       const rc = data.recycled_content || {};
       for(const [k,v] of Object.entries(rc)){
         const p = pctToNumber(v);
@@ -168,7 +181,7 @@
     }
 
     function buildCompositionChart(ctx, comp){
-      if(!comp || !Object.keys(comp).length) return null;
+      if(!ctx || !comp || !Object.keys(comp).length) return null;
       const labels = Object.keys(comp);
       const values = Object.values(comp).map(v=>pctToNumber(v));
       if(values.some(v=>v==null)) return null;
@@ -178,12 +191,80 @@
         data:{ labels, datasets:[{ data: values, backgroundColor: colors.slice(0, values.length), borderWidth: 2, hoverOffset: 8 }] },
         options:{ plugins:{ legend:{ position:'bottom', labels:{ color:'#cdd6f4' } }, tooltip:{ callbacks:{ label:(tt)=> `${tt.label}: ${tt.formattedValue}%` } } }, cutout:'64%' }
       });
-    }] },
-        options:{ plugins:{ legend:{ labels:{ color:'#cdd6f4' } } },
-          cutout:'60%',
-          borderColor:'#0b0e1a',
-        }
-      });
+    }
+
+    /* NEW: Component Explorer */
+    function buildExplorer(data){
+      const root = document.getElementById('specExplorer');
+      const comps = (data.components || []).map(c => c.name);
+      if (!root || !comps.length) { if(root) root.style.display='none'; return; }
+
+      // Header + component selector + tabs + pane
+      root.innerHTML = `
+        <h3>Component Explorer</h3>
+        <div style="display:flex;gap:10px;align-items:center;margin:8px 0 12px">
+          <label class="muted">Component</label>
+          <select id="compSel" class="select"></select>
+        </div>
+        <div id="catTabs" class="tabs"></div>
+        <div id="catPane" class="accordion"></div>
+      `;
+
+      const map = {}; (data.components||[]).forEach(c => map[c.name] = c);
+      const sel = root.querySelector('#compSel');
+      comps.forEach(n => { const o=document.createElement('option'); o.value=o.textContent=n; sel.appendChild(o); });
+
+      sel.addEventListener('change', () => renderTabs(sel.value));
+      renderTabs(comps[0]);
+
+      function renderTabs(compName){
+        const comp = map[compName]; if(!comp){ return; }
+        const cats = Object.keys(comp.categories||{});
+        const tabs = root.querySelector('#catTabs');
+        tabs.innerHTML = '';
+        cats.forEach((cn, i) => {
+          const b = document.createElement('button');
+          b.textContent = cn; b.className = 'pill';
+          b.onclick = () => renderCategory(comp, cn, tabs, b);
+          tabs.appendChild(b);
+          if(i===0) renderCategory(comp, cn, tabs, b);
+        });
+      }
+
+      function renderCategory(comp, catName, tabs, btn){
+        [...tabs.children].forEach(x => x.classList.remove('active'));
+        btn.classList.add('active');
+        const groups = comp.categories[catName] || {};
+        const pane = root.querySelector('#catPane');
+        pane.innerHTML = '';
+        Object.keys(groups).forEach(groupName => {
+          const group = groups[groupName] || [];
+          const box = document.createElement('details');
+          box.open = true;
+          box.innerHTML = `
+            <summary><h4 style="display:inline">${escapeHtml(groupName === '—' ? 'Details' : groupName)}</h4></summary>
+            <table style="width:100%;border-collapse:collapse;margin-top:6px">
+              ${group.map(renderRow).join('')}
+            </table>
+          `;
+          pane.appendChild(box);
+        });
+      }
+
+      function renderRow(f){
+        const label = escapeHtml(f.label || '');
+        const val   = (f.value === '' || f.value == null) ? '—' : escapeHtml(f.value);
+        const unit  = f.unit ? ` <span class="muted">${escapeHtml(f.unit)}</span>` : '';
+        const tip   = f.description ? `<span title="${escapeHtml(f.description)}" style="margin-left:6px;color:#9fb1d9">ℹ️</span>` : '';
+        const files = (f.files||[]).map(u => `<a href="${escapeHtml(u)}" target="_blank" rel="noopener">file</a>`).join(' · ');
+        const extra = [files && `Files: ${files}`, f.comments && `Comments: ${escapeHtml(f.comments)}`, f.note && `Note: ${escapeHtml(f.note)}`].filter(Boolean).join('<br>');
+        return `<tr>
+          <th style="text-align:left;padding:8px 6px;color:#9fb1d9;width:38%">${label}${tip}</th>
+          <td style="padding:8px 6px">${val}${unit}${extra ? `<div class="muted" style="margin-top:6px">${extra}</div>`:''}</td>
+        </tr>`;
+      }
+
+      function escapeHtml(s){ return String(s).replace(/[&<>\"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m])); }
     }
 
     (async function(){
@@ -210,14 +291,9 @@
       setText('#effPct', data.efficiency_pct!=null ? `${data.efficiency_pct}%` : '—');
       setText('#co2e', data.co2e_kg!=null ? `${data.co2e_kg} kg` : '—');
 
-      // QR & UID
-      const dppUrl = location.origin + location.pathname + `?serial=${encodeURIComponent(serial)}`;
-      $('#qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(dppUrl)}`;
+      // UID & buttons
       setText('#uid', data.uid || `urn:bs:pv:${serial}`);
-
-      // Buttons
-      const ds = data.datasheet_url || '#';
-      $('#openDatasheet').href = ds;
+      $('#openDatasheet').href = data.datasheet_url || '#';
 
       // General table
       $('#generalTable').innerHTML = table({
@@ -260,24 +336,18 @@
       const rcText = Object.keys(rc).length ? Object.entries(rc).map(([k,v])=>`${k}: ${v}`).join(', ') : '—';
       setText('#pi_recycled', rcText);
       setText('#pi_recyclability', data.recyclability || '—');
+
       // Circularity bars
       renderCircularity(data);
 
       // Composition chart
-      const comp = data.material_composition_pct || null; // e.g., {Glass: 65, Cells: 20, Frame: 12, JunctionBox: 3}
+      const comp = data.material_composition_pct || null;
       const ctx = document.getElementById('compositionChart');
       const chart = buildCompositionChart(ctx, comp);
-      if(!chart){
-        // Hide chart card if no composition
-        ctx.parentElement.style.display = 'none';
-      }
+      if(!chart && ctx && ctx.parentElement){ ctx.parentElement.style.display = 'none'; }
 
-      
-        const id = (document.getElementById('panelID').value||'').trim().toUpperCase();
-        if(!id) return;
-        const base = location.origin + location.pathname;
-        location.href = `${base}?serial=${encodeURIComponent(id)}`;
-      });
+      // NEW: Explorer
+      buildExplorer(data);
     })();
   </script>
 </body>
